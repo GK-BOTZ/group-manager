@@ -1,19 +1,17 @@
+import asyncio
 import logging
 import os
 import sys
 import time
-import ast
-import base64
 from SafoneAPI import SafoneAPI
 import telegram.ext as tg
 from aiohttp import ClientSession
-from pyrogram import Client, errors
+from pyrogram import Client
 from telethon import TelegramClient
-
 
 StartTime = time.time()
 
-# enable logging
+# Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.FileHandler("log.txt"), logging.StreamHandler()],
@@ -26,7 +24,7 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
 api = SafoneAPI()
-# if version < 3.6, stop bot.
+# Check Python version
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
     LOGGER.error(
         "You MUST have a python version of at least 3.6! Multiple features depend on this. Bot quitting."
@@ -36,7 +34,6 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 ENV = bool(os.environ.get("ENV", False))
 
 if ENV:
-
     API_ID = int(os.environ.get("API_ID", None))
     API_HASH = os.environ.get("API_HASH", None)
     
@@ -50,9 +47,7 @@ if ENV:
     LOAD = os.environ.get("LOAD", "").split()
     MONGO_DB_URI = os.environ.get("MONGO_DB_URI", None)
     NO_LOAD = os.environ.get("NO_LOAD", "").split()
-    START_IMG = os.environ.get(
-        "START_IMG", ""
-    )
+    START_IMG = os.environ.get("START_IMG", "")
     STRICT_GBAN = bool(os.environ.get("STRICT_GBAN", True))
     SUPPORT_CHAT = os.environ.get("SUPPORT_CHAT", "AsuraaSupport")
     TEMP_DOWNLOAD_DIRECTORY = os.environ.get("TEMP_DOWNLOAD_DIRECTORY", "./")
@@ -156,39 +151,41 @@ else:
 
 DRAGONS.add(OWNER_ID)
 DEV_USERS.add(OWNER_ID)
-#DEV_USERS.add(abs(0b110010001000001011011100110010001))
-#DEV_USERS.add(abs(0b101001110110010000111010111110000))
-#DEV_USERS.add(abs(0b101100001110010100011000111101001))
-
 
 updater = tg.Updater(TOKEN, workers=WORKERS, use_context=True)
 telethn = TelegramClient("mahak", API_ID, API_HASH)
 
-pbot = Client("MahakRobot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN,in_memory=True)
+pbot = Client("MahakRobot", api_id=API_ID, api_hash=API_HASH, bot_token=TOKEN, in_memory=True)
 dispatcher = updater.dispatcher
-aiohttpsession = ClientSession()
 
-print("[INFO]: Getting Bot Info...")
-BOT_ID = dispatcher.bot.id
-BOT_NAME = dispatcher.bot.first_name
-BOT_USERNAME = dispatcher.bot.username
+async def setup():
+    global aiohttpsession
+    aiohttpsession = await ClientSession().__aenter__()
 
-DRAGONS = list(DRAGONS) + list(DEV_USERS) 
-DEV_USERS = list(DEV_USERS)
-WOLVES = list(WOLVES)
-DEMONS = list(DEMONS)
-TIGERS = list(TIGERS)
+async def main():
+    await setup()
+    print("[INFO]: Getting Bot Info...")
+    BOT_ID = dispatcher.bot.id
+    BOT_NAME = dispatcher.bot.first_name
+    BOT_USERNAME = dispatcher.bot.username
 
-# Load at end to ensure all prev variables have been set
-from MahakRobot.modules.helper_funcs.handlers import (
-    CustomCommandHandler,
-    CustomMessageHandler,
-    CustomRegexHandler,
-)
+    DRAGONS = list(DRAGONS) + list(DEV_USERS) 
+    DEV_USERS = list(DEV_USERS)
+    WOLVES = list(WOLVES)
+    DEMONS = list(DEMONS)
+    TIGERS = list(TIGERS)
 
-# make sure the regex handler can take extra kwargs
-tg.RegexHandler = CustomRegexHandler
-tg.CommandHandler = CustomCommandHandler
-tg.MessageHandler = CustomMessageHandler
+    # Load at end to ensure all prev variables have been set
+    from MahakRobot.modules.helper_funcs.handlers import (
+        CustomCommandHandler,
+        CustomMessageHandler,
+        CustomRegexHandler,
+    )
 
-  
+    # make sure the regex handler can take extra kwargs
+    tg.RegexHandler = CustomRegexHandler
+    tg.CommandHandler = CustomCommandHandler
+    tg.MessageHandler = CustomMessageHandler
+
+if __name__ == "__main__":
+    asyncio.run(main())
