@@ -8,17 +8,17 @@ class Config(object):
   
     ANILIST_SECRET =  "NeCEq9A1hVnjsjZlTZyNvqK11krQ4HtSliaM7rTN"
   
-    API_ID =  "28689465"
+    API_ID =  ""
    
-    API_HASH = "fedd61d8e38f8afaed63c01b8438cbe4"
+    API_HASH = ""
    
-    TOKEN =  "6911638837:AAGr-N1or_-anS4fd6o4oAJQr8pqb4onZtg"
+    TOKEN =  ""
   
     OWNER_ID =  "6454209118" 
 
     OWNER_USERNAME =  "itz_Asuraa"
     
-    SUPPORT_CHAT =  "Ravan_Lankaa"
+    SUPPORT_CHAT =  "AsuraaSupport"
    
     START_IMG =  "https://graph.org/file/eaa3a2602e43844a488a5.jpg"
 
@@ -28,27 +28,27 @@ class Config(object):
   
     ERROR_LOGS =  "-1002100219353"
 
-    MONGO_DB_URI=  "mongodb+srv://BWFMUSIC:BWFMUSIC@cluster0.xwnup2l.mongodb.net/?retryWrites=true&w=majority"
+    MONGO_DB_URI=  ""
    
     LOG_CHANNEL =  "-1002100219353"
    
     BOT_USERNAME = "" , "MahakxBot"
    
-    DATABASE_URL =  "postgresql://asuraa_user:HWv7mxtIxuFbdq9nFUYPmKk6wgDWZxlU@dpg-cq8babmehbks738glhs0-a/asuraa"
+    DATABASE_URL =  ""
 
-    CASH_API_KEY =  "V48U2FLLKRHSVD4X"
+    CASH_API_KEY =  ""
     
-    TIME_API_KEY =  "1CUBX1HXGNHW"
+    TIME_API_KEY =  ""
 
-    SPAMWATCH_API =  "3624487efd8e4ca9c949f1ab99654ad1e4de854f41a14afd00f3ca82d808dc8c"
+    SPAMWATCH_API =  ""
     
-    SPAMWATCH_SUPPORT_CHAT =  "Ravan_Lankaa"
+    SPAMWATCH_SUPPORT_CHAT =  "AsuraaSupport"
     
-    WALL_API =  "2455acab48f3a935a8e703e54e26d121"
+    WALL_API =  ""
     
-    REM_BG_API_KEY =  "xYCR1ZyK3ZsofjH7Y6hPcyzC"
+    REM_BG_API_KEY =  ""
     
-    OPENWEATHERMAP_ID =  "887da2c60d9f13fe78b0f9d0c5cbaade"
+    OPENWEATHERMAP_ID =  ""
 
     BAN_STICKER =  "CAACAgEAAxkBAAIrTWYljyX_lqcubkAzg0jy45CRvxAFAAKvAgACrLHoRU50VVvh3xWwNAQ"
 
@@ -56,7 +56,8 @@ class Config(object):
 
     HEROKU_API_KEY =  ""
 
-    LASTFM_API_KEY =  "8f3315b5806c21004b2822f07825187d"
+    LASTFM_API_KEY =  "
+    "
     
     # Optional fields
     
