@@ -1,9 +1,20 @@
+
 import threading
+from sqlalchemy import Column, String, distinct, func, create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-from sqlalchemy import Column, String, distinct, func
+# Define Base and Engine
+BASE = declarative_base()
 
-from MahakRobot.modules.sql import BASE, SESSION
+# Create an engine (replace with your actual database URL)
+engine = create_engine('sqlite:///your_database.db')
 
+# Create a configured "Session" class
+Session = sessionmaker(bind=engine)
+
+# Create a Session instance
+SESSION = Session()
 
 class GroupLogs(BASE):
     __tablename__ = "log_channels"
@@ -14,13 +25,12 @@ class GroupLogs(BASE):
         self.chat_id = str(chat_id)
         self.log_channel = str(log_channel)
 
-
-GroupLogs.__table__.create(checkfirst=True)
+# Create tables if they don't exist
+BASE.metadata.create_all(bind=engine)
 
 LOGS_INSERTION_LOCK = threading.RLock()
 
 CHANNELS = {}
-
 
 def set_chat_log_channel(chat_id, log_channel):
     with LOGS_INSERTION_LOCK:
@@ -34,10 +44,8 @@ def set_chat_log_channel(chat_id, log_channel):
         CHANNELS[str(chat_id)] = log_channel
         SESSION.commit()
 
-
 def get_chat_log_channel(chat_id):
     return CHANNELS.get(str(chat_id))
-
 
 def stop_chat_logging(chat_id):
     with LOGS_INSERTION_LOCK:
@@ -51,13 +59,11 @@ def stop_chat_logging(chat_id):
             SESSION.commit()
             return log_channel
 
-
 def num_logchannels():
     try:
         return SESSION.query(func.count(distinct(GroupLogs.chat_id))).scalar()
     finally:
         SESSION.close()
-
 
 def migrate_chat(old_chat_id, new_chat_id):
     with LOGS_INSERTION_LOCK:
@@ -70,7 +76,6 @@ def migrate_chat(old_chat_id, new_chat_id):
 
         SESSION.commit()
 
-
 def __load_log_channels():
     global CHANNELS
     try:
@@ -78,6 +83,5 @@ def __load_log_channels():
         CHANNELS = {chat.chat_id: chat.log_channel for chat in all_chats}
     finally:
         SESSION.close()
-
 
 __load_log_channels()
