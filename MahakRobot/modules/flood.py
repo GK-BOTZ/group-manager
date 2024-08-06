@@ -14,7 +14,7 @@ from telegram.ext import (
 from telegram.utils.helpers import mention_html
 
 from MahakRobot import TIGERS, WOLVES, dispatcher
-from MahakRobot.modules.connection import connected
+#from MahakRobot.modules.connection import connected
 from MahakRobot.modules.helper_funcs.alternate import send_message
 from MahakRobot.modules.helper_funcs.chat_status import (
     bot_admin,
