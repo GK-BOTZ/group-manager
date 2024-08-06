@@ -16,17 +16,16 @@ if ALLOW_EXCL:
 else:
     CMD_STARTERS = "/"
 
-
 class AntiSpam:
     def __init__(self):
         self.whitelist = (
-            (DEV_USERS or [])
-            + (DRAGONS or [])
-            + (WOLVES or [])
-            + (DEMONS or [])
-            + (TIGERS or [])
+            set(DEV_USERS or []) |
+            set(DRAGONS or []) |
+            set(WOLVES or []) |
+            set(DEMONS or []) |
+            set(TIGERS or [])
         )
-        # Values are HIGHLY experimental, its recommended you pay attention to our commits as we will be adjusting the values over time with what suits best.
+        # Values are HIGHLY experimental, it's recommended you pay attention to our commits as we will be adjusting the values over time with what suits best.
         Duration.CUSTOM = 15  # Custom duration, 15 seconds
         self.sec_limit = RequestRate(6, Duration.CUSTOM)  # 6 / Per 15 Seconds
         self.min_limit = RequestRate(20, Duration.MINUTE)  # 20 / Per minute
@@ -52,16 +51,14 @@ class AntiSpam:
         except BucketFullException:
             return True
 
-
 SpamChecker = AntiSpam()
 MessageHandlerChecker = AntiSpam()
-
 
 class CustomCommandHandler(CommandHandler):
     def __init__(self, command, callback, admin_ok=False, allow_edit=False, **kwargs):
         super().__init__(command, callback, **kwargs)
 
-        if allow_edit is False:
+        if not allow_edit:
             self.filters &= ~(
                 Filters.update.edited_message | Filters.update.edited_channel_post
             )
@@ -128,12 +125,11 @@ class CustomRegexHandler(RegexHandler):
 class CustomMessageHandler(MessageHandler):
     def __init__(self, filters, callback, friendly="", allow_edit=False, **kwargs):
         super().__init__(filters, callback, **kwargs)
-        if allow_edit is False:
+        if not allow_edit:
             self.filters &= ~(
                 Filters.update.edited_message | Filters.update.edited_channel_post
             )
 
-        def check_update(self, update):
-            if isinstance(update, Update) and update.effective_message:
-                return self.filters(update)
-                  
+    def check_update(self, update):
+        if isinstance(update, Update) and update.effective_message:
+            return self.filters(update)
