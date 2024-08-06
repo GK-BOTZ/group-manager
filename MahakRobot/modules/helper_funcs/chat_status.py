@@ -402,7 +402,7 @@ def connection_status(func):
 
 
 # Workaround for circular import with connection.py
-from MahakRobot.modules import connection
+#from MahakRobot.modules import connection
 
-connected = connection.connected
+#connected = connection.connected
       
