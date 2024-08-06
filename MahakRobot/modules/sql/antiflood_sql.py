@@ -1,8 +1,15 @@
 import threading
+from sqlalchemy import BigInteger, Column, String, UnicodeText, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-from sqlalchemy import BigInteger, Column, String, UnicodeText
+# Define Base and Engine
+BASE = declarative_base()
+engine = create_engine('sqlite:///your_database.db')  # Replace with your actual database URL
+Session = sessionmaker(bind=engine)
 
-from MahakRobot.modules.sql import BASE, SESSION
+# Create a Session instance
+SESSION = Session()
 
 DEF_COUNT = 1
 DEF_LIMIT = 0
@@ -38,8 +45,8 @@ class FloodSettings(BASE):
         return "<{} will executing {} for flood.>".format(self.chat_id, self.flood_type)
 
 
-FloodControl.__table__.create(checkfirst=True)
-FloodSettings.__table__.create(checkfirst=True)
+# Create all tables in the engine
+BASE.metadata.create_all(bind=engine)
 
 INSERTION_FLOOD_LOCK = threading.RLock()
 INSERTION_FLOOD_SETTINGS_LOCK = threading.RLock()
@@ -115,7 +122,6 @@ def get_flood_setting(chat_id):
             return setting.flood_type, setting.value
         else:
             return 1, "0"
-
     finally:
         SESSION.close()
 
@@ -127,7 +133,6 @@ def migrate_chat(old_chat_id, new_chat_id):
             CHAT_FLOOD[str(new_chat_id)] = CHAT_FLOOD.get(str(old_chat_id), DEF_OBJ)
             flood.chat_id = str(new_chat_id)
             SESSION.commit()
-
         SESSION.close()
 
 
@@ -141,4 +146,3 @@ def __load_flood_settings():
 
 
 __load_flood_settings()
-                           
